@@ -1,0 +1,13 @@
+{
+  "manifest_version": 3,
+  "name": "OzonAccess",
+  "version": "0.1.0",
+  "description": "Улучшает семантическую навигацию Ozon для клавиатуры и скринридеров.",
+  "content_scripts": [
+    {
+      "matches": ["https://www.ozon.ru/*", "https://ozon.ru/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

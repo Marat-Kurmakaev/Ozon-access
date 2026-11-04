@@ -1,0 +1,29 @@
+{
+  "name": "ozon-access",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Расширение доступности главной страницы Ozon для клавиатуры и NVDA",
+  "type": "module",
+  "engines": { "node": ">=20.19" },
+  "scripts": {
+    "build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:e2e": "npm run build && playwright test"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.2",
+    "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.49.1",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^22.10.5",
+    "eslint": "^9.18.0",
+    "globals": "^15.14.0",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.19.1",
+    "vite": "^8.3.5",
+    "vitest": "^5.1.0"
+  }
+}

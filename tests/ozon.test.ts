@@ -100,6 +100,23 @@ describe('правила OzonAccess', () => {
     expect(document.querySelector('#named')?.getAttribute('aria-label')).toBe('Личный кабинет');
   });
 
+  it('активирует ненативный вход клавишами Enter и Space ровно один раз', () => {
+    const document = installDom('<div data-widget="profileMenuAnonymous" tabindex="0">Войти</div>');
+    const profile = document.querySelector<HTMLElement>('[data-widget="profileMenuAnonymous"]')!;
+    let clicks = 0;
+    profile.addEventListener('click', () => { clicks += 1; });
+    improveButtons(document);
+    improveButtons(document);
+    const KeyboardEvent = document.defaultView!.KeyboardEvent;
+    profile.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+    profile.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', bubbles: true }));
+    expect(clicks).toBe(1);
+    profile.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
+    expect(clicks).toBe(1);
+    profile.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true }));
+    expect(clicks).toBe(2);
+  });
+
   it('обрабатывает стрелки в динамически добавленной карточке внутри сетки', () => {
     const path = 'M6.293 3.293a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 1 1-1.414-1.414L9.586 8 6.293 4.707a1 1 0 0 1 0-1.414';
     const document = installDom(`<div data-widget="tileGridDesktop"><div id="card"><a href="/product/a-1/"><button><svg><path d="${path}"/></svg></button></a><a href="/product/a-1/">Динамический товар</a></div></div>`);

@@ -1,0 +1,120 @@
+{
+  "mode": "live-groups",
+  "generatedAt": "2026-11-04T11:22:48.456Z",
+  "source": "https://www.ozon.ru/",
+  "requestedGroups": [
+    "element-group-008",
+    "element-group-009",
+    "element-group-012"
+  ],
+  "arrowInteractionsAllowed": false,
+  "observations": [
+    {
+      "groupId": "element-group-008",
+      "expectedPurpose": "Предыдущая фотография товара",
+      "expectedSvgSignature": "c5aa4ed8f578",
+      "matches": 0,
+      "found": false,
+      "url": "/",
+      "tag": "",
+      "domPath": "",
+      "outerHtml": "",
+      "computedRole": "",
+      "computedName": "",
+      "computedDescription": "",
+      "axIgnored": true,
+      "axStates": {},
+      "svg": {
+        "signature": "c5aa4ed8f578",
+        "viewBox": "",
+        "paths": [],
+        "title": ""
+      },
+      "parentContext": {
+        "tag": "",
+        "widget": "",
+        "text": "",
+        "productName": "",
+        "productPath": ""
+      },
+      "attributes": {},
+      "eventListeners": [],
+      "ancestorEventListeners": [],
+      "conclusion": "Совпадающий элемент на живой странице не найден."
+    },
+    {
+      "groupId": "element-group-009",
+      "expectedPurpose": "Следующая фотография товара",
+      "expectedSvgSignature": "afb33512a013",
+      "matches": 0,
+      "found": false,
+      "url": "/",
+      "tag": "",
+      "domPath": "",
+      "outerHtml": "",
+      "computedRole": "",
+      "computedName": "",
+      "computedDescription": "",
+      "axIgnored": true,
+      "axStates": {},
+      "svg": {
+        "signature": "afb33512a013",
+        "viewBox": "",
+        "paths": [],
+        "title": ""
+      },
+      "parentContext": {
+        "tag": "",
+        "widget": "",
+        "text": "",
+        "productName": "",
+        "productPath": ""
+      },
+      "attributes": {},
+      "eventListeners": [],
+      "ancestorEventListeners": [],
+      "conclusion": "Совпадающий элемент на живой странице не найден."
+    },
+    {
+      "groupId": "element-group-012",
+      "expectedPurpose": "Добавление товара в избранное",
+      "expectedSvgSignature": "cda97bf95b0b",
+      "matches": 0,
+      "found": false,
+      "url": "/",
+      "tag": "",
+      "domPath": "",
+      "outerHtml": "",
+      "computedRole": "",
+      "computedName": "",
+      "computedDescription": "",
+      "axIgnored": true,
+      "axStates": {},
+      "svg": {
+        "signature": "cda97bf95b0b",
+        "viewBox": "",
+        "paths": [],
+        "title": ""
+      },
+      "parentContext": {
+        "tag": "",
+        "widget": "",
+        "text": "",
+        "productName": "",
+        "productPath": ""
+      },
+      "attributes": {},
+      "eventListeners": [],
+      "ancestorEventListeners": [],
+      "conclusion": "Совпадающий элемент на живой странице не найден."
+    }
+  ],
+  "errors": [
+    "Целевые SVG-сигнатуры не найдены: {\"title\":\"Похоже, нет соединения\",\"productLinks\":0,\"svgButtons\":0,\"tileGrids\":0}"
+  ],
+  "limitations": [
+    "Исследован только первый видимый экземпляр каждой SVG-группы.",
+    "Кнопка избранного никогда не нажимается.",
+    "Выполнен только пассивный анализ; элементы не нажимались."
+  ]
+}

@@ -1,0 +1,13 @@
+
+> ozon-access@0.1.0 audit:fixture
+> tsx tools/audit/cli.ts fixture *
+
+{
+  "mode": "fixture",
+  "output": "C:\\Works\\OzonAccess\\reports",
+  "elements": 1955,
+  "groups": 91,
+  "issueTypes": 11,
+  "confirmed": 178,
+  "unknownGroups": 64
+}

@@ -33,6 +33,18 @@ export function accessibleName(element: Element): string {
 export function setGeneratedAttribute(element: Element, name: string, value: string): boolean {
   if (!value || element.hasAttribute(name)) return false;
   element.setAttribute(name, value);
+  element.setAttribute(`data-ozon-access-${name}`, 'true');
+  element.setAttribute('data-ozon-access', 'true');
+  return true;
+}
+
+export function setGeneratedStateAttribute(element: Element, name: string, value: string): boolean {
+  if (!value) return false;
+  const marker = `data-ozon-access-${name}`;
+  if (element.hasAttribute(name) && !element.hasAttribute(marker)) return false;
+  if (element.getAttribute(name) === value) return false;
+  element.setAttribute(name, value);
+  element.setAttribute(marker, 'true');
   element.setAttribute('data-ozon-access', 'true');
   return true;
 }

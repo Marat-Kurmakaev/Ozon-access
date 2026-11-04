@@ -23,6 +23,16 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
+Глубокий аудит Chromium/CDP и сравнение до/после:
+
+```powershell
+npm run audit:fixture
+npm run audit:compare
+npm run audit:live
+```
+
+Безопасностные ограничения и режим проверки подсказок поиска описаны в [tools/audit/README.md](tools/audit/README.md). Текстовые результаты находятся в `reports/`.
+
 Готовое распакованное расширение создаётся в `dist/`; `manifest.json` лежит в его корне.
 
 ## Установка

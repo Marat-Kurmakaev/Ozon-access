@@ -13,10 +13,11 @@ test('собранное расширение улучшает сохранён�
   await page.addScriptTag({ path: resolve('dist/content.js') });
 
   await expect(page.locator('[role="main"]')).toHaveCount(1);
+  await expect(page.locator('[role="main"] footer')).toHaveCount(0);
   await expect(page.locator('a[href*="/product/"]:not([aria-label])').filter({ has: page.locator('img') })).toHaveCount(0);
   await expect(page.locator('[role="heading"][aria-level="2"]')).toHaveCount(70);
   expect(errors).toEqual([]);
 
-  const axe = await new AxeBuilder({ page }).withRules(['landmark-one-main']).analyze();
+  const axe = await new AxeBuilder({ page }).withRules(['landmark-one-main', 'landmark-contentinfo-is-top-level']).analyze();
   expect(axe.violations).toEqual([]);
 });

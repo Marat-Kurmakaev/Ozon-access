@@ -10,7 +10,14 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:e2e": "npm run build && playwright test"
+    "test:e2e": "npm run build && playwright test",
+    "audit": "npm run audit:fixture",
+    "audit:fixture": "tsx tools/audit/cli.ts fixture",
+    "audit:live": "tsx tools/audit/cli.ts live",
+    "audit:groups": "tsx tools/audit/cli.ts live-groups",
+    "audit:groups:arrows": "tsx tools/audit/cli.ts live-groups --groups=element-group-008,element-group-009 --allow-arrow-interactions",
+    "audit:compare": "tsx tools/audit/cli.ts compare",
+    "audit:behavior": "tsx tools/audit/cli.ts live --allow-safe-interactions"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
@@ -23,6 +30,7 @@
     "jsdom": "^25.0.1",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.19.1",
+    "tsx": "^4.20.6",
     "vite": "^8.3.5",
     "vitest": "^5.1.0"
   }

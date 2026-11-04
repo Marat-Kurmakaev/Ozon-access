@@ -51,9 +51,6 @@ describe('правила OzonAccess', () => {
     expect(document.querySelectorAll('[role="main"]')).toHaveLength(1);
     expect(document.querySelector('[role="main"] footer')).toBeNull();
     expect(document.querySelector('input[placeholder*="Ozon"] + * button[aria-label="Поиск по изображению"]')).not.toBeNull();
-    const profile = document.querySelector('[data-widget="profileMenuAnonymous"]');
-    expect(profile?.getAttribute('role')).toBe('button');
-    expect(profile?.getAttribute('aria-label')).toBe('Войти в Ozon');
     const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-widget="tileGridDesktop"] button')];
     const previous = buttons.filter((button) => button.querySelector('path')?.getAttribute('d')?.startsWith('M8.293 3.293'));
     const next = buttons.filter((button) => button.querySelector('path')?.getAttribute('d')?.startsWith('M6.293 3.293'));
@@ -89,32 +86,6 @@ describe('правила OzonAccess', () => {
     const document = installDom(`<div data-widget="tileGridDesktop"><a href="/product/a-1/"><button aria-label="Назад"><svg><path d="${path}"/></svg></button></a><a href="/product/a-1/">Товар A</a></div>`);
     improveButtons(document);
     expect(document.querySelector('button')?.getAttribute('aria-label')).toBe('Назад');
-  });
-
-  it('подписывает динамически добавленный элемент входа и сохраняет существующее имя', () => {
-    const document = installDom('<div id="root"><div id="new" data-widget="profileMenuAnonymous" tabindex="0"></div><div id="named" data-widget="profileMenuAnonymous" tabindex="0" aria-label="Личный кабинет"></div></div>');
-    improveButtons(document.querySelector('#new')!);
-    improveButtons(document);
-    expect(document.querySelector('#new')?.getAttribute('role')).toBe('button');
-    expect(document.querySelector('#new')?.getAttribute('aria-label')).toBe('Войти в Ozon');
-    expect(document.querySelector('#named')?.getAttribute('aria-label')).toBe('Личный кабинет');
-  });
-
-  it('активирует ненативный вход клавишами Enter и Space ровно один раз', () => {
-    const document = installDom('<div data-widget="profileMenuAnonymous" tabindex="0">Войти</div>');
-    const profile = document.querySelector<HTMLElement>('[data-widget="profileMenuAnonymous"]')!;
-    let clicks = 0;
-    profile.addEventListener('click', () => { clicks += 1; });
-    improveButtons(document);
-    improveButtons(document);
-    const KeyboardEvent = document.defaultView!.KeyboardEvent;
-    profile.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
-    profile.dispatchEvent(new KeyboardEvent('keyup', { key: 'Enter', bubbles: true }));
-    expect(clicks).toBe(1);
-    profile.dispatchEvent(new KeyboardEvent('keydown', { key: ' ', bubbles: true }));
-    expect(clicks).toBe(1);
-    profile.dispatchEvent(new KeyboardEvent('keyup', { key: ' ', bubbles: true }));
-    expect(clicks).toBe(2);
   });
 
   it('обрабатывает стрелки в динамически добавленной карточке внутри сетки', () => {

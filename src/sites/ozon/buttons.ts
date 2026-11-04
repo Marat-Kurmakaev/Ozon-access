@@ -66,6 +66,10 @@ function improveFavoriteButtons(root: ParentNode): void {
 export function improveButtons(root: ParentNode): void {
   improveProductPhotoButtons(root);
   improveFavoriteButtons(root);
+  for (const profile of elementsIn(root, '[data-widget="profileMenuAnonymous"][tabindex]')) {
+    setGeneratedAttribute(profile, 'role', 'button');
+    setGeneratedAttribute(profile, 'aria-label', 'Войти');
+  }
   const searchInputs = root.querySelectorAll<HTMLInputElement>('input[type="text"][name="text"][placeholder*="Ozon" i]');
   for (const input of searchInputs) {
     if (!accessibleName(input)) setGeneratedAttribute(input, 'aria-label', 'Поиск на Ozon');

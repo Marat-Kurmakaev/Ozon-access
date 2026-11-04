@@ -21,10 +21,7 @@
 | element-group-004 | 210 | tileGridDesktop | Неизвестно | unknown |
 | element-group-006 | 70 | tileGridDesktop | Неизвестно | unknown |
 | element-group-007 | 70 | tileGridDesktop | Неизвестно | unknown |
-| element-group-008 | 70 | tileGridDesktop | Предыдущая фотография товара | strong-inference |
-| element-group-009 | 70 | tileGridDesktop | Следующая фотография товара | strong-inference |
 | element-group-011 | 70 | tileGridDesktop | Неизвестно | unknown |
-| element-group-012 | 70 | tileGridDesktop | Добавление товара в избранное | strong-inference |
 | element-group-013 | 15 | footer | Неизвестно | unknown |
 | element-group-015 | 9 | footer | Неизвестно | unknown |
 | element-group-016 | 7 | addressBookBarWeb | Неизвестно | unknown |

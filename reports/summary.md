@@ -1,6 +1,6 @@
 # Сводка аудита OzonAccess
 
-Режим: **fixture**. Источник: `ozon-dom.html`. Время: 2026-11-04T11:08:07.734Z.
+Режим: **fixture**. Источник: `ozon-dom.html`. Время: 2026-11-04T13:50:12.562Z.
 
 ## Покрытие
 
@@ -8,8 +8,8 @@
 | --- | --- |
 | Интерактивные или потенциально интерактивные элементы | 1955 |
 | Группы повторяющихся компонентов | 91 |
-| Достоверно классифицированные элементы | 178 |
-| Сильные предположения | 210 |
+| Достоверно классифицированные элементы | 388 |
+| Сильные предположения | 0 |
 | Кнопки без вычисляемого имени Chromium | 216 |
 | Ссылки без вычисляемого имени Chromium | 73 |
 | Уникальные типы проблем | 11 |
@@ -40,11 +40,11 @@
 | element-group-005 | 70 | a | link | tileGridDesktop | Ссылка на товар без доступного имени | confirmed |
 | element-group-006 | 70 | div | generic | tileGridDesktop | Неизвестно | unknown |
 | element-group-007 | 70 | img | image | tileGridDesktop | Неизвестно | unknown |
-| element-group-008 | 70 | button | button | tileGridDesktop | Предыдущая фотография товара | strong-inference |
-| element-group-009 | 70 | button | button | tileGridDesktop | Следующая фотография товара | strong-inference |
+| element-group-008 | 70 | button | button | tileGridDesktop | Предыдущая фотография товара | confirmed |
+| element-group-009 | 70 | button | button | tileGridDesktop | Следующая фотография товара | confirmed |
 | element-group-010 | 70 | a | link | tileGridDesktop | Назначение определяется индивидуальным доступным именем | confirmed |
 | element-group-011 | 70 | span | — | tileGridDesktop | Неизвестно | unknown |
-| element-group-012 | 70 | button | button | tileGridDesktop | Добавление товара в избранное | strong-inference |
+| element-group-012 | 70 | button | button | tileGridDesktop | Добавление товара в избранное | confirmed |
 | element-group-013 | 15 | div | generic | footer | Неизвестно | unknown |
 | element-group-014 | 10 | a | link | footer | Назначение определяется индивидуальным доступным именем | confirmed |
 | element-group-015 | 9 | span | — | footer | Неизвестно | unknown |

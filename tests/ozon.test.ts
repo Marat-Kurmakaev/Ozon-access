@@ -141,6 +141,33 @@ describe('правила OzonAccess', () => {
     expect(frame.querySelector('p')?.getAttribute('role')).toBe('alert');
   });
 
+  it('стабильно подписывает вход, не заменяя штатное поведение', () => {
+    const document = installDom('<div data-widget="profileMenuAnonymous" tabindex="0"><span>Войти</span></div>');
+    const profile = document.querySelector<HTMLElement>('[data-widget="profileMenuAnonymous"]')!;
+    let clicks = 0;
+    profile.addEventListener('click', () => { clicks += 1; });
+    improveButtons(document);
+    expect(profile.getAttribute('role')).toBe('button');
+    expect(profile.getAttribute('aria-label')).toBe('Войти');
+    expect(profile.getAttribute('tabindex')).toBe('0');
+    profile.click();
+    expect(clicks).toBe(1);
+  });
+
+  it('связывает комбобокс страны со списком и выбранным пунктом', () => {
+    const document = installDom('<main><div>Введите номер телефона</div><div><span>+7</span><input readonly role="combobox" name="filter"></div><input type="tel"><div id="popup"><div role="option" title="Россия"><svg></svg>Россия +7<svg></svg></div><div role="option" title="Беларусь"><svg></svg>Беларусь +375</div></div></main>');
+    improveAuth(document);
+    const combo = document.querySelector<HTMLInputElement>('[role="combobox"]')!;
+    const listbox = document.querySelector<HTMLElement>('#popup')!;
+    const options = [...document.querySelectorAll<HTMLElement>('[role="option"]')];
+    expect(combo.getAttribute('aria-label')).toBe('Выбор страны и телефонного кода, текущий код +7');
+    expect(combo.getAttribute('aria-haspopup')).toBe('listbox');
+    expect(combo.getAttribute('aria-controls')).toBe('popup');
+    expect(listbox.getAttribute('role')).toBe('listbox');
+    expect(listbox.getAttribute('aria-label')).toBe('Страны и телефонные коды');
+    expect(options.map((option) => option.getAttribute('aria-selected'))).toEqual(['true', 'false']);
+  });
+
   it('создаёт заголовки для пустого поиска и гостевого кабинета', () => {
     const document = installDom('<div data-widget="wallpaper"><div data-widget="statusWidget"><div><span>Ничего не нашлось</span></div></div><div data-widget="myGuest"><div>Вы не авторизованы</div></div></div>');
     improveStructure(document);

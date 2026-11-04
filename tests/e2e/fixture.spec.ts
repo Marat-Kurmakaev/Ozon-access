@@ -16,6 +16,8 @@ test('собранное расширение улучшает сохранён�
   await expect(page.locator('[role="main"] footer')).toHaveCount(0);
   await expect(page.locator('a[href*="/product/"]:not([aria-label])').filter({ has: page.locator('img') })).toHaveCount(0);
   await expect(page.locator('[role="heading"][aria-level="2"]')).toHaveCount(70);
+  await expect(page.locator('[data-widget="profileMenuAnonymous"]')).toHaveAttribute('role', 'button');
+  await expect(page.locator('[data-widget="profileMenuAnonymous"]')).toHaveAttribute('aria-label', 'Войти');
   expect(errors).toEqual([]);
 
   const axe = await new AxeBuilder({ page }).withRules(['landmark-one-main', 'landmark-contentinfo-is-top-level']).analyze();

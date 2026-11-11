@@ -2,36 +2,78 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
+  workflow_dispatch:
   release:
     types: [published]
 
+permissions:
+  contents: read
+
 jobs:
   verify:
+    name: Проверки и сборка
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Получить исходники
+        uses: actions/checkout@v4
         with:
-          node-version: 20
+          persist-credentials: false
+      - name: Настроить Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm test
-      - run: npm run build
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
-      - uses: actions/upload-artifact@v4
+      - name: Установить зависимости
+        run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Lint
+        run: npm run lint
+      - name: Unit tests
+        run: npm test
+      - name: Собрать расширение
+        run: npm run build
+      - name: Установить Chromium для Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Playwright E2E
+        run: npm run test:e2e
+      - name: Загрузить собранное расширение
+        uses: actions/upload-artifact@v4
         with:
-          name: ozon-access-extension
+          name: OzonAccess-dist-${{ github.sha }}
           path: dist/
+          if-no-files-found: error
+          retention-days: 14
 
-      - name: Создать ZIP для выпуска
-        if: github.event_name == 'release'
-        run: cd dist && zip -r ../ozon-access-${{ github.event.release.tag_name }}.zip .
+  release:
+    name: Архив GitHub Release
+    if: github.event_name == 'release'
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Скачать проверенную сборку
+        uses: actions/download-artifact@v4
+        with:
+          name: OzonAccess-dist-${{ github.sha }}
+          path: dist
+      - name: Проверить тег и manifest
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          test -f dist/manifest.json
+      - name: Создать ZIP
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          cd dist
+          zip -r "../OzonAccess-${RELEASE_TAG}.zip" .
       - name: Добавить ZIP в GitHub Release
-        if: github.event_name == 'release'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release upload "${{ github.event.release.tag_name }}" "ozon-access-${{ github.event.release.tag_name }}.zip"
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: gh release upload "$RELEASE_TAG" "OzonAccess-${RELEASE_TAG}.zip" --clobber

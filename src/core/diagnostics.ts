@@ -1,4 +1,4 @@
-import { accessibleName, elementsIn } from './accessibility';
+import { elementsIn, heuristicTextAlternative } from './accessibility';
 
 export type DiagnosticKind = 'unnamed-button' | 'unnamed-link' | 'heading-order' | 'unknown-interactive' | 'rule-error';
 export interface DiagnosticIssue { kind: DiagnosticKind; message: string; element?: Element; }
@@ -15,10 +15,10 @@ function interactiveWithoutNativeRole(root: ParentNode): Element[] {
 export function diagnose(document: Document, errors: DiagnosticIssue[] = []): DiagnosticReport {
   const issues = [...errors];
   for (const button of document.querySelectorAll('button')) {
-    if (!accessibleName(button)) issues.push({ kind: 'unnamed-button', message: 'Кнопка без вычислимого статическим анализом имени', element: button });
+    if (!heuristicTextAlternative(button)) issues.push({ kind: 'unnamed-button', message: 'Кнопка без найденной DOM-эвристикой текстовой альтернативы', element: button });
   }
   for (const link of document.querySelectorAll('a[href]')) {
-    if (!accessibleName(link)) issues.push({ kind: 'unnamed-link', message: 'Ссылка без вычислимого статическим анализом имени', element: link });
+    if (!heuristicTextAlternative(link)) issues.push({ kind: 'unnamed-link', message: 'Ссылка без найденной DOM-эвристикой текстовой альтернативы', element: link });
   }
   let previous = 0;
   for (const heading of document.querySelectorAll('h1,h2,h3,h4,h5,h6,[role="heading"][aria-level]')) {
@@ -38,5 +38,5 @@ export function publishDiagnostics(report: DiagnosticReport): void {
     result[issue.kind] = (result[issue.kind] ?? 0) + 1;
     return result;
   }, {});
-  console.info('[OzonAccess] Диагностика', summary, report);
+  console.info('[OzonAccess] Диагностика', summary);
 }

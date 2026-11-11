@@ -9,7 +9,9 @@ export function referencedText(element: Element): string {
   return ids.map((id) => normalizeText(element.ownerDocument.getElementById(id)?.textContent)).filter(Boolean).join(' ');
 }
 
-export function accessibleName(element: Element): string {
+// DOM-only heuristic for locating useful visible text. This is not the browser's
+// computed accessible name and must not be reported as AX data.
+export function heuristicTextAlternative(element: Element): string {
   if (element.getAttribute('aria-hidden') === 'true') return '';
   const label = normalizeText(element.getAttribute('aria-label'));
   if (label) return label;
@@ -28,6 +30,17 @@ export function accessibleName(element: Element): string {
     return explicitLabel || normalizeText(element.getAttribute('placeholder'));
   }
   return '';
+}
+
+export function hasAuthorAccessibleName(element: Element): boolean {
+  if (normalizeText(element.getAttribute('aria-label'))) return true;
+  if (referencedText(element)) return true;
+  if (normalizeText(element.getAttribute('title'))) return true;
+  if (element instanceof HTMLInputElement && element.id) {
+    const label = element.ownerDocument.querySelector(`label[for="${CSS.escape(element.id)}"]`);
+    if (normalizeText(label?.textContent)) return true;
+  }
+  return normalizeText(element.textContent) !== '' || normalizeText(element.querySelector('img[alt]')?.getAttribute('alt')) !== '';
 }
 
 export function setGeneratedAttribute(element: Element, name: string, value: string): boolean {

@@ -7,10 +7,13 @@ const process = createOzonProcessor(document, errors);
 process(document);
 observeAddedContent(document, process);
 
-const report = () => publishDiagnostics(diagnose(document, errors));
-report();
-window.addEventListener('load', report, { once: true });
+if (__OZON_ACCESS_DIAGNOSTICS__) {
+  const report = () => publishDiagnostics(diagnose(document, errors));
+  report();
+  window.addEventListener('load', report, { once: true });
+}
 
 declare global {
+  const __OZON_ACCESS_DIAGNOSTICS__: boolean;
   interface Window { __ozonAccessReport?: ReturnType<typeof diagnose>; }
 }

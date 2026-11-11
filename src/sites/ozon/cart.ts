@@ -1,13 +1,28 @@
-import { accessibleName, elementsIn, setGeneratedAttribute } from '../../core/accessibility';
+import { elementsIn, heuristicTextAlternative, productPath, setGeneratedAttribute } from '../../core/accessibility';
 
 const DELETE_PATH = 'M13 6.333c.417 0 .833.235.833.834';
 const MINUS_PATH = 'M13.416 6.75a1.25 1.25 0 0 1 0 2.5';
 const PLUS_PATH = 'M8 1.333c.69 0 1.25.56 1.25 1.25';
 
-function productName(container: Element): string {
-  const link = [...container.querySelectorAll<HTMLAnchorElement>('a[href*="/product/"]')]
-    .find((candidate) => Boolean(accessibleName(candidate)));
-  return link ? accessibleName(link) : '';
+function distinctProducts(container: Element): string[] {
+  return [...new Set([...container.querySelectorAll<HTMLAnchorElement>('a[href*="/product/"]')]
+    .map((link) => productPath(link.getAttribute('href') ?? ''))
+    .filter((path): path is string => Boolean(path)))];
+}
+
+function itemBoundary(control: Element, cart: Element): Element | null {
+  for (let current = control.parentElement; current && current !== cart; current = current.parentElement) {
+    if (distinctProducts(current).length === 1) return current;
+  }
+  return distinctProducts(cart).length === 1 ? cart : null;
+}
+
+function productNameForControl(control: Element, cart: Element): string {
+  const boundary = itemBoundary(control, cart);
+  if (!boundary) return '';
+  const link = [...boundary.querySelectorAll<HTMLAnchorElement>('a[href*="/product/"]')]
+    .find((candidate) => Boolean(heuristicTextAlternative(candidate)));
+  return link ? heuristicTextAlternative(link) : '';
 }
 
 export function improveCart(root: ParentNode): void {
@@ -26,14 +41,18 @@ export function improveCart(root: ParentNode): void {
   const items = root instanceof Element && root.closest('[data-widget="cartSplit"]')
     ? [root.closest('[data-widget="cartSplit"]') as Element]
     : elementsIn(root, '[data-widget="cartSplit"]');
-  for (const item of items) {
-    const name = productName(item);
-    if (!name) continue;
-    const checkbox = item.querySelector<HTMLInputElement>('input[type="checkbox"]');
-    const quantity = item.querySelector<HTMLInputElement>('input[type="text"]');
-    if (checkbox) setGeneratedAttribute(checkbox, 'aria-label', `Выбрать товар «${name}»`);
-    if (quantity) setGeneratedAttribute(quantity, 'aria-label', `Количество товара «${name}»`);
-    for (const button of item.querySelectorAll<HTMLButtonElement>('button')) {
+  for (const cart of items) {
+    for (const checkbox of cart.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')) {
+      const name = productNameForControl(checkbox, cart);
+      if (name) setGeneratedAttribute(checkbox, 'aria-label', `Выбрать товар «${name}»`);
+    }
+    for (const quantity of cart.querySelectorAll<HTMLInputElement>('input[type="text"]')) {
+      const name = productNameForControl(quantity, cart);
+      if (name) setGeneratedAttribute(quantity, 'aria-label', `Количество товара «${name}»`);
+    }
+    for (const button of cart.querySelectorAll<HTMLButtonElement>('button')) {
+      const name = productNameForControl(button, cart);
+      if (!name) continue;
       const path = button.querySelector('path')?.getAttribute('d') ?? '';
       if (path.startsWith(DELETE_PATH)) setGeneratedAttribute(button, 'aria-label', `Удалить товар «${name}»`);
       if (path.startsWith(MINUS_PATH)) setGeneratedAttribute(button, 'aria-label', `Уменьшить количество товара «${name}»`);

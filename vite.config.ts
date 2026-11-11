@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'node:path';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  define: {
+    __OZON_ACCESS_DIAGNOSTICS__: JSON.stringify(mode === 'diagnostic'),
+  },
   build: {
     emptyOutDir: true,
     lib: {
@@ -21,4 +24,4 @@ export default defineConfig({
       },
     },
   ],
-});
+}));

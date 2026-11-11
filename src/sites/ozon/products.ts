@@ -1,4 +1,4 @@
-import { accessibleName, elementsIn, normalizeText, productPath, setGeneratedAttribute } from '../../core/accessibility';
+import { elementsIn, hasAuthorAccessibleName, heuristicTextAlternative, normalizeText, productPath, setGeneratedAttribute } from '../../core/accessibility';
 
 function headingCandidate(link: HTMLAnchorElement, name: string): HTMLElement | null {
   const descendants = [...link.querySelectorAll<HTMLElement>('span, div, p')];
@@ -23,11 +23,11 @@ export function improveProducts(root: ParentNode): void {
       groups.set(path, group);
     }
     for (const links of groups.values()) {
-      const namedLink = links.find((link) => Boolean(accessibleName(link)));
-      const name = namedLink ? accessibleName(namedLink) : '';
+      const namedLink = links.find((link) => Boolean(heuristicTextAlternative(link)));
+      const name = namedLink ? heuristicTextAlternative(namedLink) : '';
       if (!name) continue;
       for (const link of links) {
-        if (!accessibleName(link)) setGeneratedAttribute(link, 'aria-label', name);
+        if (!hasAuthorAccessibleName(link)) setGeneratedAttribute(link, 'aria-label', name);
       }
       if (namedLink && !namedLink.querySelector('[role="heading"]')) {
         const candidate = headingCandidate(namedLink, name);

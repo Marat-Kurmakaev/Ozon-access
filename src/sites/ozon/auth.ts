@@ -1,4 +1,4 @@
-import { elementsIn, normalizeText, setGeneratedAttribute, setGeneratedStateAttribute } from '../../core/accessibility';
+import { elementsIn, hasAuthorAccessibleName, normalizeText, setGeneratedAttribute, setGeneratedStateAttribute } from '../../core/accessibility';
 
 const enhancedCountryCombos = new WeakSet<HTMLInputElement>();
 const pendingCountryFocusRestore = new WeakSet<HTMLInputElement>();
@@ -79,6 +79,23 @@ function countryCodeFor(combo: HTMLInputElement): string {
   return normalizeText(combo.parentElement?.textContent).match(/\+\d{1,6}/)?.[0] ?? '';
 }
 
+function nearbyCheckboxLabel(checkbox: HTMLInputElement): string {
+  let current = checkbox.parentElement;
+  for (let depth = 0; current && depth < 6; depth += 1, current = current.parentElement) {
+    const text = normalizeText(current.textContent);
+    if (text) return text;
+  }
+  return '';
+}
+
+function improveConsentCheckboxes(document: Document): void {
+  for (const checkbox of document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')) {
+    if (hasAuthorAccessibleName(checkbox)) continue;
+    const label = nearbyCheckboxLabel(checkbox);
+    if (/^Соглашаюсь(?:\s|$)/i.test(label)) setGeneratedAttribute(checkbox, 'aria-label', label);
+  }
+}
+
 function improveCountrySelector(document: Document): void {
   const combo = document.querySelector<HTMLInputElement>('input[role="combobox"][readonly][name="filter"]');
   if (!combo) return;
@@ -105,9 +122,13 @@ function improveCountrySelector(document: Document): void {
 export function improveAuth(root: ParentNode): void {
   for (const frame of elementsIn(root, 'iframe[src*="/ozonid-lite"]')) {
     setGeneratedAttribute(frame, 'title', 'Авторизация Ozon');
+    const modalLayout = frame.closest('[data-widget="modalLayout"]');
+    const close = modalLayout?.parentElement?.querySelector<HTMLButtonElement>(':scope > button');
+    if (close && !hasAuthorAccessibleName(close)) setGeneratedAttribute(close, 'aria-label', 'Закрыть окно авторизации');
   }
   const document = root instanceof Document ? root : root.ownerDocument;
   if (!document) return;
+  improveConsentCheckboxes(document);
   improveCountrySelector(document);
   const phone = document.querySelector<HTMLInputElement>('input[type="tel"]');
   if (phone && /Введите номер телефона/i.test(document.body?.textContent ?? '')) {

@@ -166,14 +166,40 @@ describe('правила OzonAccess', () => {
   });
 
   it('улучшает родительский iframe и содержимое авторизации', () => {
-    const parent = installDom('<iframe src="/ozonid-lite"></iframe>');
+    const parent = installDom('<div class="modal-shell"><button id="close"><svg></svg></button><div data-widget="modalLayout"><iframe src="/ozonid-lite"></iframe></div></div>');
     improveAuth(parent);
     expect(parent.querySelector('iframe')?.getAttribute('title')).toBe('Авторизация Ozon');
+    expect(parent.querySelector('#close')?.getAttribute('aria-label')).toBe('Закрыть окно авторизации');
     const frame = installDom('<main><div>Введите номер телефона</div><input type="tel"><p>Некорректный формат телефона</p></main>');
     improveAuth(frame);
     expect(frame.querySelector('input')?.getAttribute('aria-label')).toBe('Номер телефона');
     expect(frame.querySelector('input')?.getAttribute('aria-describedby')).toBe('ozon-access-phone-error');
     expect(frame.querySelector('p')?.getAttribute('role')).toBe('alert');
+  });
+
+  it('подписывает флажки согласия, не меняя их состояние', () => {
+    const document = installDom('<main><div><div><label><input type="checkbox" checked></label></div><div>Соглашаюсь с Условиями использования сервисов Ozon и Условиями обработки персональных данных</div></div><div><div><label><input type="checkbox"></label></div><div>Соглашаюсь на получение сообщений рекламного характера</div></div></main>');
+    improveAuth(document);
+    const [terms, ads] = [...document.querySelectorAll<HTMLInputElement>('input[type="checkbox"]')];
+    expect(terms.getAttribute('aria-label')).toBe('Соглашаюсь с Условиями использования сервисов Ozon и Условиями обработки персональных данных');
+    expect(ads.getAttribute('aria-label')).toBe('Соглашаюсь на получение сообщений рекламного характера');
+    expect(terms.checked).toBe(true);
+    expect(ads.checked).toBe(false);
+  });
+
+  it('не подменяет нативные кнопки создания и входа в аккаунт', () => {
+    const document = installDom('<main><button id="create">Создать аккаунт</button><button id="existing">Уже есть аккаунт</button></main>');
+    const create = document.querySelector<HTMLButtonElement>('#create')!;
+    const existing = document.querySelector<HTMLButtonElement>('#existing')!;
+    improveAuth(document);
+    expect(document.querySelector('#create')).toBe(create);
+    expect(document.querySelector('#existing')).toBe(existing);
+    expect(create.disabled).toBe(false);
+    expect(existing.disabled).toBe(false);
+    expect(create.hasAttribute('role')).toBe(false);
+    expect(existing.hasAttribute('role')).toBe(false);
+    expect(create.hasAttribute('data-ozon-access')).toBe(false);
+    expect(existing.hasAttribute('data-ozon-access')).toBe(false);
   });
 
   it('создаёт нативную кнопку входа внутри штатной кликабельной ветки', () => {
